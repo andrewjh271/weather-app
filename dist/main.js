@@ -35,8 +35,15 @@
 /*!************************!*\
   !*** ./src/weather.js ***!
   \************************/
-/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "getForecast": () => (/* binding */ getForecast),
+/* harmony export */   "getWeather": () => (/* binding */ getWeather),
+/* harmony export */   "setUnit": () => (/* binding */ setUnit)
+/* harmony export */ });
 const dayjs = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
 const utc = __webpack_require__(/*! dayjs/plugin/utc */ "./node_modules/dayjs/plugin/utc.js");
 const timezone = __webpack_require__(/*! dayjs/plugin/timezone */ "./node_modules/dayjs/plugin/timezone.js"); // dependent on utc plugin
@@ -46,8 +53,11 @@ dayjs.extend(timezone);
 dayjs.tz.setDefault('UTC');
 
 const key = 'dcee472b5a49e727dac8badc44404b52';
-let unit = 'celsius';
-unit = 'imperial';
+let unit = 'imperial';
+
+function setUnit(option) {
+  unit = option;
+}
 
 async function getCoords(city) {
   try {
@@ -62,22 +72,27 @@ async function getCoords(city) {
   }
 }
 
-async function getCurrent(city) {
-  const [lat, long] = await getCoords(city);
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${key}&units=${unit}`
-  );
-  const parsed = await response.json();
-  const sunrise = dayjs.unix(parsed.sys.sunrise + parsed.timezone).tz();
-  const sunset = dayjs.unix(parsed.sys.sunset + parsed.timezone).tz();
-  return {
-    temp:  Math.round(parsed.main.temp),
-    description: parsed.weather[0].description,
-    feelsLike: Math.round(parsed.main.feels_like),
-    humidity: parsed.main.humidity,
-    sunrise: sunrise.format('h:mma'),
-    sunset: sunset.format('h:mma')
-  };
+async function getWeather(city) {
+  try {
+    const [lat, long] = await getCoords(city);
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${key}&units=${unit}`
+    );
+    const parsed = await response.json();
+    const sunrise = dayjs.unix(parsed.sys.sunrise + parsed.timezone).tz();
+    const sunset = dayjs.unix(parsed.sys.sunset + parsed.timezone).tz();
+    return {
+      name: `${parsed.name}, ${parsed.sys.country}`,
+      temp:  `${Math.round(parsed.main.temp)}°`,
+      description: parsed.weather[0].description,
+      feelsLike: Math.round(parsed.main.feels_like),
+      humidity: parsed.main.humidity,
+      sunrise: sunrise.format('h:mma'),
+      sunset: sunset.format('h:mma')
+    };
+  } catch (error) {
+    return error;
+  }
 }
 
 async function getForecast(city) {
@@ -98,16 +113,8 @@ async function getForecast(city) {
   return data;
 }
 
-async function consume(city) {
-  const current = await getCurrent(city);
-  console.log(current);
 
-  const forecast = await getForecast(city);
-  const icon = document.querySelector('#icon-test');
-  icon.src = forecast[1].iconURL;
-}
 
-consume('san diego');
 
 /***/ })
 
@@ -138,18 +145,6 @@ consume('san diego');
 /******/ 	}
 /******/ 	
 /************************************************************************/
-/******/ 	/* webpack/runtime/compat get default export */
-/******/ 	(() => {
-/******/ 		// getDefaultExport function for compatibility with non-harmony modules
-/******/ 		__webpack_require__.n = (module) => {
-/******/ 			var getter = module && module.__esModule ?
-/******/ 				() => (module['default']) :
-/******/ 				() => (module);
-/******/ 			__webpack_require__.d(getter, { a: getter });
-/******/ 			return getter;
-/******/ 		};
-/******/ 	})();
-/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -188,8 +183,54 @@ var __webpack_exports__ = {};
   \**********************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _weather__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./weather */ "./src/weather.js");
-/* harmony import */ var _weather__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_weather__WEBPACK_IMPORTED_MODULE_0__);
 
+
+const searchBar = document.querySelector("#search");
+const searchIcon = document.querySelector("#search-icon");
+
+const name = document.querySelector('#name');
+// const country = document.querySelector('#country');
+const temp = document.querySelector('#temp');
+const description = document.querySelector('#description');
+const feelsLike = document.querySelector('#feels-like');
+const humidity = document.querySelector('#humidity');
+const sunrise = document.querySelector('#sunrise');
+const sunset = document.querySelector('#sunset');
+
+searchBar.addEventListener('keyup', (e) => {
+  if (e.key === 'Enter') {
+    search();
+  }
+});
+searchIcon.addEventListener('click', search);
+
+
+async function setWeather(city) {
+  const data = await (0,_weather__WEBPACK_IMPORTED_MODULE_0__.getWeather)(city);
+  console.log(data);
+
+  name.textContent = data.name;
+  temp.textContent = data.temp;
+  description.textContent = data.description;
+  feelsLike.textContent = `Feels like: ${data.feelsLike}°`;
+  humidity.textContent = `Humidity: ${data.humidity}%`;
+  sunrise.textContent = `Sunrise: ${data.sunrise}`;
+  sunset.textContent = `Sunset: ${data.sunset}`;
+}
+
+async function setForecast(city) {
+  const forecast = await (0,_weather__WEBPACK_IMPORTED_MODULE_0__.getForecast)(city);
+  const icon = document.querySelector('#icon-test');
+  icon.src = forecast[1].iconURL;
+}
+
+function search() {
+  console.log(searchBar.value);
+  setWeather(searchBar.value);
+}
+
+// setWeather('san diego');
+// setForecast('san diego');
 })();
 
 /******/ })()

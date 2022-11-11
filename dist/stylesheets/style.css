@@ -5,7 +5,7 @@
 
 html {
   box-sizing: border-box;
-  font-family: 'Titillium Web', sans-serif;
+  font-family: "Titillium Web", sans-serif;
 }
 
 body {
@@ -28,13 +28,10 @@ header {
   font-size: 16px;
   padding: 5px 2px;
   background-color: lightgray;
-
-  &:focus,
-  &:focus-visible {
-    outline: none;
-    background-color: #e6eaff;
-  }
-
+}
+#search:focus, #search:focus-visible {
+  outline: none;
+  background-color: #e6eaff;
 }
 
 #search-icon {
@@ -42,10 +39,9 @@ header {
   font-size: 23px;
   top: 5px;
   right: 33px;
-
-  &:hover {
-    cursor: pointer;
-  }
+}
+#search-icon:hover {
+  cursor: pointer;
 }
 
 #weather-container {
@@ -53,19 +49,18 @@ header {
   margin: auto;
   margin-top: 200px;
   width: 500px;
-
-  h2,
-  h3,
-  h4 {
-    text-align: center;
-  }
-
-  .details {
-    display: flex;
-    justify-content: center;
-
-    div {
-      margin: 20px;
-    }
-  }
 }
+#weather-container h2,
+#weather-container h3,
+#weather-container h4 {
+  text-align: center;
+}
+#weather-container .details {
+  display: flex;
+  justify-content: center;
+}
+#weather-container .details div {
+  margin: 20px;
+}
+
+/*# sourceMappingURL=style.css.map */

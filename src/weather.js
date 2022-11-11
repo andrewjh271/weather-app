@@ -7,8 +7,11 @@ dayjs.extend(timezone);
 dayjs.tz.setDefault('UTC');
 
 const key = 'dcee472b5a49e727dac8badc44404b52';
-let unit = 'celsius';
-unit = 'imperial';
+let unit = 'imperial';
+
+function setUnit(option) {
+  unit = option;
+}
 
 async function getCoords(city) {
   try {
@@ -23,22 +26,27 @@ async function getCoords(city) {
   }
 }
 
-async function getCurrent(city) {
-  const [lat, long] = await getCoords(city);
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${key}&units=${unit}`
-  );
-  const parsed = await response.json();
-  const sunrise = dayjs.unix(parsed.sys.sunrise + parsed.timezone).tz();
-  const sunset = dayjs.unix(parsed.sys.sunset + parsed.timezone).tz();
-  return {
-    temp:  Math.round(parsed.main.temp),
-    description: parsed.weather[0].description,
-    feelsLike: Math.round(parsed.main.feels_like),
-    humidity: parsed.main.humidity,
-    sunrise: sunrise.format('h:mma'),
-    sunset: sunset.format('h:mma')
-  };
+async function getWeather(city) {
+  try {
+    const [lat, long] = await getCoords(city);
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${key}&units=${unit}`
+    );
+    const parsed = await response.json();
+    const sunrise = dayjs.unix(parsed.sys.sunrise + parsed.timezone).tz();
+    const sunset = dayjs.unix(parsed.sys.sunset + parsed.timezone).tz();
+    return {
+      name: `${parsed.name}, ${parsed.sys.country}`,
+      temp:  `${Math.round(parsed.main.temp)}°`,
+      description: parsed.weather[0].description,
+      feelsLike: Math.round(parsed.main.feels_like),
+      humidity: parsed.main.humidity,
+      sunrise: sunrise.format('h:mma'),
+      sunset: sunset.format('h:mma')
+    };
+  } catch (error) {
+    return error;
+  }
 }
 
 async function getForecast(city) {
@@ -59,13 +67,4 @@ async function getForecast(city) {
   return data;
 }
 
-async function consume(city) {
-  const current = await getCurrent(city);
-  console.log(current);
-
-  const forecast = await getForecast(city);
-  const icon = document.querySelector('#icon-test');
-  icon.src = forecast[1].iconURL;
-}
-
-consume('san diego');
+export { getWeather, getForecast, setUnit};
