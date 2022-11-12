@@ -51,21 +51,25 @@ async function getWeather(city) {
 }
 
 async function getForecast(city) {
-  const [lat, long] = await getCoords(city);
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${key}&units=${unit}&cnt=6`
-  );
-  const parsed = await response.json();
-  const localTime = parsed.city.timezone;
-  const data = parsed.list.map((forecast) => ({
-    temp: Math.round(forecast.main.temp),
-    iconURL: `http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`,
-    time: dayjs
-      .unix(forecast.dt + localTime)
-      .tz()
-      .format('hA')
-  }));
-  return data;
+  try {
+    const [lat, long] = await getCoords(city);
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${key}&units=${unit}&cnt=6`
+    );
+    const parsed = await response.json();
+    const localTime = parsed.city.timezone;
+    return parsed.list.map((forecast) => ({
+      temp: `${Math.round(forecast.main.temp)}°`,
+      iconURL: `http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`,
+      time: dayjs
+        .unix(forecast.dt + localTime)
+        .tz()
+        .format('hA')
+    }));
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
 }
 
 export { getWeather, getForecast, setUnit};

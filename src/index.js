@@ -23,7 +23,6 @@ searchIcon.addEventListener('click', search);
 async function setWeather(city) {
   const data = await getWeather(city);
   if (data instanceof Error) return;
-  console.log(data);
 
   name.textContent = data.name;
   temp.textContent = data.temp;
@@ -36,16 +35,37 @@ async function setWeather(city) {
   weatherContainer.classList.remove('hidden');
 }
 
+const forecastContainer = document.querySelector('#forecast-container');
+
+
 async function setForecast(city) {
   const forecast = await getForecast(city);
-  const icon = document.querySelector('#icon-test');
-  icon.src = forecast[1].iconURL;
+  if (forecast instanceof Error) return;
+  forecastContainer.innerHTML = '';
+
+  forecast.forEach((window) => {
+    const box = document.createElement('div');
+    const time = document.createElement('p');
+    const icon = document.createElement('img');
+    const temperature = document.createElement('h4');
+
+    time.textContent = window.time;
+    icon.src = window.iconURL;
+    icon.classList.add('forecast-icon');
+    temperature.textContent = window.temp;
+
+    box.appendChild(time);
+    box.appendChild(icon);
+    box.appendChild(temperature);
+
+    forecastContainer.appendChild(box);
+    forecastContainer.classList.remove('hidden');
+  })
 }
 
 function search() {
   console.log(searchBar.value);
   setWeather(searchBar.value);
+  setForecast(searchBar.value);
+  searchBar.value = '';
 }
-
-// setWeather('san diego');
-// setForecast('san diego');

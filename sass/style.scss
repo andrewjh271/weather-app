@@ -24,7 +24,7 @@ header {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 #search {
@@ -63,13 +63,47 @@ header {
   h4 {
     text-align: center;
   }
+}
 
-  .details {
-    display: flex;
-    justify-content: center;
+.details {
+  display: flex;
+  justify-content: center;
 
-    div {
-      margin: 20px;
-    }
+  div {
+    margin: 20px;
   }
+
+  h4 {
+    text-align: start;
+  }
+}
+
+#description {
+  text-transform: capitalize;
+}
+
+#forecast-container {
+  border: 1px solid darkcyan;
+  background-color: lightgray;
+  margin: auto;
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+
+  h4 {
+    font-size: 19px;
+    margin: 9px;
+    text-align: center;
+  }
+
+  p {
+    font-size: 15px;
+    margin: 9px;
+    text-align: center;
+  }
+}
+
+.forecast-icon {
+  width: 70px;
+  height: 70px;
 }
