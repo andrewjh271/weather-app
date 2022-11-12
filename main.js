@@ -97,21 +97,25 @@ async function getWeather(city) {
 }
 
 async function getForecast(city) {
-  const [lat, long] = await getCoords(city);
-  const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${key}&units=${unit}&cnt=6`
-  );
-  const parsed = await response.json();
-  const localTime = parsed.city.timezone;
-  const data = parsed.list.map((forecast) => ({
-    temp: Math.round(forecast.main.temp),
-    iconURL: `http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`,
-    time: dayjs
-      .unix(forecast.dt + localTime)
-      .tz()
-      .format('hA')
-  }));
-  return data;
+  try {
+    const [lat, long] = await getCoords(city);
+    const response = await fetch(
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${key}&units=${unit}&cnt=6`
+    );
+    const parsed = await response.json();
+    const localTime = parsed.city.timezone;
+    return parsed.list.map((forecast) => ({
+      temp: `${Math.round(forecast.main.temp)}°`,
+      iconURL: `http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`,
+      time: dayjs
+        .unix(forecast.dt + localTime)
+        .tz()
+        .format('hA')
+    }));
+  } catch (error) {
+    console.error(error);
+    return error;
+  }
 }
 
 
@@ -209,7 +213,6 @@ searchIcon.addEventListener('click', search);
 async function setWeather(city) {
   const data = await (0,_weather__WEBPACK_IMPORTED_MODULE_0__.getWeather)(city);
   if (data instanceof Error) return;
-  console.log(data);
 
   name.textContent = data.name;
   temp.textContent = data.temp;
@@ -222,19 +225,41 @@ async function setWeather(city) {
   weatherContainer.classList.remove('hidden');
 }
 
+const forecastContainer = document.querySelector('#forecast-container');
+
+
 async function setForecast(city) {
   const forecast = await (0,_weather__WEBPACK_IMPORTED_MODULE_0__.getForecast)(city);
-  const icon = document.querySelector('#icon-test');
-  icon.src = forecast[1].iconURL;
+  if (forecast instanceof Error) return;
+  forecastContainer.innerHTML = '';
+
+  forecast.forEach((window) => {
+    const box = document.createElement('div');
+    const time = document.createElement('p');
+    const icon = document.createElement('img');
+    const temperature = document.createElement('h4');
+
+    time.textContent = window.time;
+    icon.src = window.iconURL;
+    icon.classList.add('forecast-icon');
+    temperature.textContent = window.temp;
+
+    box.appendChild(time);
+    box.appendChild(icon);
+    box.appendChild(temperature);
+
+    forecastContainer.appendChild(box);
+    forecastContainer.classList.remove('hidden');
+  })
 }
 
 function search() {
   console.log(searchBar.value);
   setWeather(searchBar.value);
+  setForecast(searchBar.value);
+  searchBar.value = '';
 }
 
-// setWeather('san diego');
-// setForecast('san diego');
 })();
 
 /******/ })()

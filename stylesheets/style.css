@@ -24,7 +24,7 @@ header {
 }
 
 .hidden {
-  display: none;
+  display: none !important;
 }
 
 #search {
@@ -59,12 +59,44 @@ header {
 #weather-container h4 {
   text-align: center;
 }
-#weather-container .details {
+
+.details {
   display: flex;
   justify-content: center;
 }
-#weather-container .details div {
+.details div {
   margin: 20px;
+}
+.details h4 {
+  text-align: start;
+}
+
+#description {
+  text-transform: capitalize;
+}
+
+#forecast-container {
+  border: 1px solid darkcyan;
+  background-color: lightgray;
+  margin: auto;
+  width: 500px;
+  display: flex;
+  justify-content: space-between;
+}
+#forecast-container h4 {
+  font-size: 19px;
+  margin: 9px;
+  text-align: center;
+}
+#forecast-container p {
+  font-size: 15px;
+  margin: 9px;
+  text-align: center;
+}
+
+.forecast-icon {
+  width: 70px;
+  height: 70px;
 }
 
 /*# sourceMappingURL=style.css.map */
