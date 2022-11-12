@@ -91,6 +91,7 @@ async function getWeather(city) {
       sunset: sunset.format('h:mma')
     };
   } catch (error) {
+    console.error(error);
     return error;
   }
 }
@@ -188,8 +189,8 @@ __webpack_require__.r(__webpack_exports__);
 const searchBar = document.querySelector("#search");
 const searchIcon = document.querySelector("#search-icon");
 
+const weatherContainer = document.querySelector('#weather-container');
 const name = document.querySelector('#name');
-// const country = document.querySelector('#country');
 const temp = document.querySelector('#temp');
 const description = document.querySelector('#description');
 const feelsLike = document.querySelector('#feels-like');
@@ -207,6 +208,7 @@ searchIcon.addEventListener('click', search);
 
 async function setWeather(city) {
   const data = await (0,_weather__WEBPACK_IMPORTED_MODULE_0__.getWeather)(city);
+  if (data instanceof Error) return;
   console.log(data);
 
   name.textContent = data.name;
@@ -216,6 +218,8 @@ async function setWeather(city) {
   humidity.textContent = `Humidity: ${data.humidity}%`;
   sunrise.textContent = `Sunrise: ${data.sunrise}`;
   sunset.textContent = `Sunset: ${data.sunset}`;
+
+  weatherContainer.classList.remove('hidden');
 }
 
 async function setForecast(city) {

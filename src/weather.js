@@ -45,6 +45,7 @@ async function getWeather(city) {
       sunset: sunset.format('h:mma')
     };
   } catch (error) {
+    console.error(error);
     return error;
   }
 }
