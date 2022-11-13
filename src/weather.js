@@ -37,12 +37,13 @@ async function getWeather(city) {
     const sunset = dayjs.unix(parsed.sys.sunset + parsed.timezone).tz();
     return {
       name: `${parsed.name}, ${parsed.sys.country}`,
-      temp:  `${Math.round(parsed.main.temp)}°`,
+      temp: `${Math.round(parsed.main.temp)}°`,
       description: parsed.weather[0].description,
       feelsLike: Math.round(parsed.main.feels_like),
       humidity: parsed.main.humidity,
       sunrise: sunrise.format('h:mma'),
-      sunset: sunset.format('h:mma')
+      sunset: sunset.format('h:mma'),
+      code: parsed.weather[0].id,
     };
   } catch (error) {
     console.error(error);
@@ -64,7 +65,7 @@ async function getForecast(city) {
       time: dayjs
         .unix(forecast.dt + localTime)
         .tz()
-        .format('hA')
+        .format('hA'),
     }));
   } catch (error) {
     console.error(error);
@@ -72,4 +73,4 @@ async function getForecast(city) {
   }
 }
 
-export { getWeather, getForecast, setUnit};
+export { getWeather, getForecast, setUnit };

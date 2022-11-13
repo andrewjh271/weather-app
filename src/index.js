@@ -1,7 +1,8 @@
 import { getWeather, getForecast, setUnit } from './weather';
+import setBackground from './weatherBackground';
 
-const searchBar = document.querySelector("#search");
-const searchIcon = document.querySelector("#search-icon");
+const searchBar = document.querySelector('#search');
+const searchIcon = document.querySelector('#search-icon');
 
 const weatherContainer = document.querySelector('#weather-container');
 const name = document.querySelector('#name');
@@ -19,7 +20,6 @@ searchBar.addEventListener('keyup', (e) => {
 });
 searchIcon.addEventListener('click', search);
 
-
 async function setWeather(city) {
   const data = await getWeather(city);
   if (data instanceof Error) return;
@@ -32,11 +32,12 @@ async function setWeather(city) {
   sunrise.textContent = `Sunrise: ${data.sunrise}`;
   sunset.textContent = `Sunset: ${data.sunset}`;
 
+  setBackground(data.code);
+
   weatherContainer.classList.remove('hidden');
 }
 
 const forecastContainer = document.querySelector('#forecast-container');
-
 
 async function setForecast(city) {
   const forecast = await getForecast(city);
@@ -60,7 +61,7 @@ async function setForecast(city) {
 
     forecastContainer.appendChild(box);
     forecastContainer.classList.remove('hidden');
-  })
+  });
 }
 
 function search() {
