@@ -83,12 +83,13 @@ async function getWeather(city) {
     const sunset = dayjs.unix(parsed.sys.sunset + parsed.timezone).tz();
     return {
       name: `${parsed.name}, ${parsed.sys.country}`,
-      temp:  `${Math.round(parsed.main.temp)}°`,
+      temp: `${Math.round(parsed.main.temp)}°`,
       description: parsed.weather[0].description,
       feelsLike: Math.round(parsed.main.feels_like),
       humidity: parsed.main.humidity,
       sunrise: sunrise.format('h:mma'),
-      sunset: sunset.format('h:mma')
+      sunset: sunset.format('h:mma'),
+      code: parsed.weather[0].id,
     };
   } catch (error) {
     console.error(error);
@@ -110,7 +111,7 @@ async function getForecast(city) {
       time: dayjs
         .unix(forecast.dt + localTime)
         .tz()
-        .format('hA')
+        .format('hA'),
     }));
   } catch (error) {
     console.error(error);
@@ -119,6 +120,56 @@ async function getForecast(city) {
 }
 
 
+
+
+/***/ }),
+
+/***/ "./src/weatherBackground.js":
+/*!**********************************!*\
+  !*** ./src/weatherBackground.js ***!
+  \**********************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ setBackground)
+/* harmony export */ });
+document.body.style.backgroundImage = "url('images/landing.jpg')";
+
+function setBackground(code) {
+  let keyword;
+  switch (true) {
+    case code < 300:
+      keyword = 'thunder';
+      break;
+    case code < 400:
+      keyword = 'drizzle';
+      break;
+    case code < 600:
+      keyword = 'rain';
+      break;
+    case code < 700:
+      keyword = 'snow';
+      break;
+    case code === 741:
+      keyword = 'fog';
+      break;
+    case code < 800:
+      keyword = 'atmosphere';
+      break;
+    case code === 800:
+      keyword = 'clear';
+      break;
+    case code === 804:
+      keyword = 'overcast';
+      break;
+    default:
+      keyword = 'clouds';
+      break;
+  }
+  document.body.style.backgroundImage = `url('images/${keyword}.jpg')`;
+}
 
 
 /***/ })
@@ -188,10 +239,12 @@ var __webpack_exports__ = {};
   \**********************/
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _weather__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./weather */ "./src/weather.js");
+/* harmony import */ var _weatherBackground__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./weatherBackground */ "./src/weatherBackground.js");
 
 
-const searchBar = document.querySelector("#search");
-const searchIcon = document.querySelector("#search-icon");
+
+const searchBar = document.querySelector('#search');
+const searchIcon = document.querySelector('#search-icon');
 
 const weatherContainer = document.querySelector('#weather-container');
 const name = document.querySelector('#name');
@@ -209,7 +262,6 @@ searchBar.addEventListener('keyup', (e) => {
 });
 searchIcon.addEventListener('click', search);
 
-
 async function setWeather(city) {
   const data = await (0,_weather__WEBPACK_IMPORTED_MODULE_0__.getWeather)(city);
   if (data instanceof Error) return;
@@ -222,11 +274,12 @@ async function setWeather(city) {
   sunrise.textContent = `Sunrise: ${data.sunrise}`;
   sunset.textContent = `Sunset: ${data.sunset}`;
 
+  (0,_weatherBackground__WEBPACK_IMPORTED_MODULE_1__["default"])(data.code);
+
   weatherContainer.classList.remove('hidden');
 }
 
 const forecastContainer = document.querySelector('#forecast-container');
-
 
 async function setForecast(city) {
   const forecast = await (0,_weather__WEBPACK_IMPORTED_MODULE_0__.getForecast)(city);
@@ -250,7 +303,7 @@ async function setForecast(city) {
 
     forecastContainer.appendChild(box);
     forecastContainer.classList.remove('hidden');
-  })
+  });
 }
 
 function search() {
