@@ -42,7 +42,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "getForecast": () => (/* binding */ getForecast),
 /* harmony export */   "getWeather": () => (/* binding */ getWeather),
-/* harmony export */   "setUnit": () => (/* binding */ setUnit)
+/* harmony export */   "toggleUnit": () => (/* binding */ toggleUnit)
 /* harmony export */ });
 const dayjs = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
 const utc = __webpack_require__(/*! dayjs/plugin/utc */ "./node_modules/dayjs/plugin/utc.js");
@@ -55,8 +55,8 @@ dayjs.tz.setDefault('UTC');
 const key = 'dcee472b5a49e727dac8badc44404b52';
 let unit = 'imperial';
 
-function setUnit(option) {
-  unit = option;
+function toggleUnit() {
+  unit = (unit === 'imperial') ? 'metric' : 'imperial';
 }
 
 async function getCoords(city) {
@@ -310,9 +310,20 @@ function search() {
   console.log(searchBar.value);
   setWeather(searchBar.value);
   setForecast(searchBar.value);
-  searchBar.value = '';
+  // searchBar.value = '';
 }
 
+const slider = document.querySelector('.slider');
+slider.addEventListener('click', handleUnit);
+
+
+function handleUnit() {
+  // default is Fahrenheit
+  slider.classList.toggle('celsius');
+  (0,_weather__WEBPACK_IMPORTED_MODULE_0__.toggleUnit)();
+  setWeather(searchBar.value);
+  setForecast(searchBar.value);
+}
 })();
 
 /******/ })()
