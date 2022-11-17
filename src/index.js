@@ -1,4 +1,4 @@
-import { getWeather, getForecast, setUnit } from './weather';
+import { getWeather, getForecast, toggleUnit } from './weather';
 import setBackground from './weatherBackground';
 
 const searchBar = document.querySelector('#search');
@@ -68,5 +68,17 @@ function search() {
   console.log(searchBar.value);
   setWeather(searchBar.value);
   setForecast(searchBar.value);
-  searchBar.value = '';
+  // searchBar.value = '';
+}
+
+const slider = document.querySelector('.slider');
+slider.addEventListener('click', handleUnit);
+
+
+function handleUnit() {
+  // default is Fahrenheit
+  slider.classList.toggle('celsius');
+  toggleUnit();
+  setWeather(searchBar.value);
+  setForecast(searchBar.value);
 }

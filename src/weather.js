@@ -9,8 +9,8 @@ dayjs.tz.setDefault('UTC');
 const key = 'dcee472b5a49e727dac8badc44404b52';
 let unit = 'imperial';
 
-function setUnit(option) {
-  unit = option;
+function toggleUnit() {
+  unit = (unit === 'imperial') ? 'metric' : 'imperial';
 }
 
 async function getCoords(city) {
@@ -73,4 +73,4 @@ async function getForecast(city) {
   }
 }
 
-export { getWeather, getForecast, setUnit };
+export { getWeather, getForecast, toggleUnit };
