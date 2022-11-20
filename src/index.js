@@ -20,6 +20,10 @@ let kelvinsFeelsLike;
 const forecastKelvins = [];
 const forecastTemperatures =  [];
 
+const locationIcon = document.querySelector('#location-icon');
+
+locationIcon.addEventListener('click', searchUserLocation);
+
 searchBar.addEventListener('keyup', (e) => {
   if (e.key === 'Enter') {
     search();
@@ -27,8 +31,8 @@ searchBar.addEventListener('keyup', (e) => {
 });
 searchIcon.addEventListener('click', search);
 
-async function setWeather(city) {
-  const data = await getWeather(city);
+async function setWeather(location) {
+  const data = await getWeather(location);
   if (data instanceof Error) return;
 
   kelvins = data.temp;
@@ -47,8 +51,8 @@ async function setWeather(city) {
 
 const forecastContainer = document.querySelector('#forecast-container');
 
-async function setForecast(city) {
-  const forecast = await getForecast(city);
+async function setForecast(location) {
+  const forecast = await getForecast(location);
   if (forecast instanceof Error) return;
   forecastContainer.innerHTML = '';
 
@@ -73,9 +77,20 @@ async function setForecast(city) {
 }
 
 async function search() {
-  setWeather(searchBar.value);
-  await setForecast(searchBar.value);
+  setWeather({city: searchBar.value});
+  await setForecast({city: searchBar.value});
   convertTemperatures();
+}
+
+async function searchUserLocation() {
+  navigator.geolocation.getCurrentPosition(
+    async (position) => {
+      const userCoords = [position.coords.latitude, position.coords.longitude];
+      setWeather({coords: userCoords});
+      await setForecast({coords: userCoords});
+      convertTemperatures();
+    },
+    (error) => console.error(error));
 }
 
 const slider = document.querySelector('.slider');

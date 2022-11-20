@@ -56,6 +56,17 @@ header {
   }
 }
 
+#location-icon {
+  position: relative;
+  font-size: 23px;
+  top: 6px;
+  right: 21px;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
 #weather-container {
   margin: auto;
   margin-top: 200px;

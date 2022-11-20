@@ -21,9 +21,11 @@ async function getCoords(city) {
   }
 }
 
-async function getWeather(city) {
+async function getWeather(location) {
   try {
-    const [lat, long] = await getCoords(city);
+    const [lat, long] = location.coords
+      ? location.coords
+      : await getCoords(location.city);
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${key}`
     );
@@ -46,9 +48,11 @@ async function getWeather(city) {
   }
 }
 
-async function getForecast(city) {
+async function getForecast(location) {
   try {
-    const [lat, long] = await getCoords(city);
+    const [lat, long] = location.coords
+      ? location.coords
+      : await getCoords(location.city);
     const response = await fetch(
       `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${key}&cnt=6`
     );
