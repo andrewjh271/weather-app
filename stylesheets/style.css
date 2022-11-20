@@ -121,6 +121,16 @@ header {
   cursor: pointer;
 }
 
+#location-icon {
+  position: relative;
+  font-size: 23px;
+  top: 6px;
+  right: 21px;
+}
+#location-icon:hover {
+  cursor: pointer;
+}
+
 #weather-container {
   margin: auto;
   margin-top: 200px;
