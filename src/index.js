@@ -1,4 +1,5 @@
-import { getWeather, getForecast, toggleUnit } from './weather';
+import { Kelvin } from '@khanisak/temperature-converter';
+import { getWeather, getForecast } from './weather';
 import setBackground from './weatherBackground';
 
 const searchBar = document.querySelector('#search');
@@ -13,6 +14,12 @@ const humidity = document.querySelector('#humidity');
 const sunrise = document.querySelector('#sunrise');
 const sunset = document.querySelector('#sunset');
 
+let isFahrenheit = true;
+let kelvins;
+let kelvinsFeelsLike;
+const forecastKelvins = [];
+const forecastTemperatures =  [];
+
 searchBar.addEventListener('keyup', (e) => {
   if (e.key === 'Enter') {
     search();
@@ -24,10 +31,11 @@ async function setWeather(city) {
   const data = await getWeather(city);
   if (data instanceof Error) return;
 
+  kelvins = data.temp;
+  kelvinsFeelsLike = data.feelsLike;
+
   name.textContent = data.name;
-  temp.textContent = data.temp;
   description.textContent = data.description;
-  feelsLike.textContent = `Feels like: ${data.feelsLike}°`;
   humidity.textContent = `Humidity: ${data.humidity}%`;
   sunrise.textContent = `Sunrise: ${data.sunrise}`;
   sunset.textContent = `Sunset: ${data.sunset}`;
@@ -44,41 +52,55 @@ async function setForecast(city) {
   if (forecast instanceof Error) return;
   forecastContainer.innerHTML = '';
 
-  forecast.forEach((window) => {
+  forecast.forEach((window, index) => {
     const box = document.createElement('div');
     const time = document.createElement('p');
     const icon = document.createElement('img');
-    const temperature = document.createElement('h4');
+    forecastTemperatures[index] = document.createElement('h4');
 
     time.textContent = window.time;
     icon.src = window.iconURL;
     icon.classList.add('forecast-icon');
-    temperature.textContent = window.temp;
+    forecastKelvins[index] = window.temp;
 
     box.appendChild(time);
     box.appendChild(icon);
-    box.appendChild(temperature);
+    box.appendChild(forecastTemperatures[index]);
 
     forecastContainer.appendChild(box);
     forecastContainer.classList.remove('hidden');
   });
 }
 
-function search() {
-  console.log(searchBar.value);
+async function search() {
   setWeather(searchBar.value);
-  setForecast(searchBar.value);
-  // searchBar.value = '';
+  await setForecast(searchBar.value);
+  convertTemperatures();
 }
 
 const slider = document.querySelector('.slider');
-slider.addEventListener('click', handleUnit);
+slider.addEventListener('click', toggleUnit);
 
 
-function handleUnit() {
+function toggleUnit() {
   // default is Fahrenheit
   slider.classList.toggle('celsius');
-  toggleUnit();
-  setWeather(searchBar.value);
-  setForecast(searchBar.value);
+  isFahrenheit = !isFahrenheit;
+  convertTemperatures();
+}
+
+function convertTemperatures() {
+  if (isFahrenheit) {
+    temp.textContent = `${Math.round(new Kelvin(kelvins).toFahrenheit().value)}°F`;
+    feelsLike.textContent = `Feels like: ${Math.round(new Kelvin(kelvinsFeelsLike).toFahrenheit().value)}°F`;
+    forecastKelvins.forEach((forecastKelvin, index) => {
+      forecastTemperatures[index].textContent = `${Math.round(new Kelvin(forecastKelvin).toFahrenheit().value)}°F`;
+    })
+  } else {
+    temp.textContent = `${Math.round(new Kelvin(kelvins).toCelcius().value)}°C`;
+    feelsLike.textContent = `Feels like: ${Math.round(new Kelvin(kelvinsFeelsLike).toCelcius().value)}°C`;
+    forecastKelvins.forEach((forecastKelvin, index) => {
+      forecastTemperatures[index].textContent = `${Math.round(new Kelvin(forecastKelvin).toCelcius().value)}°C`;
+    })
+  }
 }

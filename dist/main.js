@@ -41,8 +41,7 @@
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "getForecast": () => (/* binding */ getForecast),
-/* harmony export */   "getWeather": () => (/* binding */ getWeather),
-/* harmony export */   "toggleUnit": () => (/* binding */ toggleUnit)
+/* harmony export */   "getWeather": () => (/* binding */ getWeather)
 /* harmony export */ });
 const dayjs = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
 const utc = __webpack_require__(/*! dayjs/plugin/utc */ "./node_modules/dayjs/plugin/utc.js");
@@ -53,11 +52,6 @@ dayjs.extend(timezone);
 dayjs.tz.setDefault('UTC');
 
 const key = 'dcee472b5a49e727dac8badc44404b52';
-let unit = 'imperial';
-
-function toggleUnit() {
-  unit = (unit === 'imperial') ? 'metric' : 'imperial';
-}
 
 async function getCoords(city) {
   try {
@@ -76,16 +70,16 @@ async function getWeather(city) {
   try {
     const [lat, long] = await getCoords(city);
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${key}&units=${unit}`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${key}`
     );
     const parsed = await response.json();
     const sunrise = dayjs.unix(parsed.sys.sunrise + parsed.timezone).tz();
     const sunset = dayjs.unix(parsed.sys.sunset + parsed.timezone).tz();
     return {
       name: `${parsed.name}, ${parsed.sys.country}`,
-      temp: `${Math.round(parsed.main.temp)}°`,
+      temp: parsed.main.temp,
       description: parsed.weather[0].description,
-      feelsLike: Math.round(parsed.main.feels_like),
+      feelsLike: parsed.main.feels_like,
       humidity: parsed.main.humidity,
       sunrise: sunrise.format('h:mma'),
       sunset: sunset.format('h:mma'),
@@ -101,12 +95,12 @@ async function getForecast(city) {
   try {
     const [lat, long] = await getCoords(city);
     const response = await fetch(
-      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${key}&units=${unit}&cnt=6`
+      `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${key}&cnt=6`
     );
     const parsed = await response.json();
     const localTime = parsed.city.timezone;
     return parsed.list.map((forecast) => ({
-      temp: `${Math.round(forecast.main.temp)}°`,
+      temp: forecast.main.temp,
       iconURL: `http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`,
       time: dayjs
         .unix(forecast.dt + localTime)
@@ -170,6 +164,598 @@ function setBackground(code) {
   }
   document.body.style.backgroundImage = `url('images/${keyword}.jpg')`;
 }
+
+
+/***/ }),
+
+/***/ "./node_modules/@khanisak/temperature-converter/dist/class/Celcius.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@khanisak/temperature-converter/dist/class/Celcius.js ***!
+  \****************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Celcius = void 0;
+var Delisle_1 = __webpack_require__(/*! ./Delisle */ "./node_modules/@khanisak/temperature-converter/dist/class/Delisle.js");
+var Fahrenheit_1 = __webpack_require__(/*! ./Fahrenheit */ "./node_modules/@khanisak/temperature-converter/dist/class/Fahrenheit.js");
+var Kelvin_1 = __webpack_require__(/*! ./Kelvin */ "./node_modules/@khanisak/temperature-converter/dist/class/Kelvin.js");
+var Newton_1 = __webpack_require__(/*! ./Newton */ "./node_modules/@khanisak/temperature-converter/dist/class/Newton.js");
+var Rankine_1 = __webpack_require__(/*! ./Rankine */ "./node_modules/@khanisak/temperature-converter/dist/class/Rankine.js");
+var Reamur_1 = __webpack_require__(/*! ./Reamur */ "./node_modules/@khanisak/temperature-converter/dist/class/Reamur.js");
+var Romer_1 = __webpack_require__(/*! ./Romer */ "./node_modules/@khanisak/temperature-converter/dist/class/Romer.js");
+var Temperature_1 = __importDefault(__webpack_require__(/*! ./Temperature */ "./node_modules/@khanisak/temperature-converter/dist/class/Temperature.js"));
+var Celcius = /** @class */ (function (_super) {
+    __extends(Celcius, _super);
+    function Celcius(value) {
+        var _this = _super.call(this, value) || this;
+        _this.toCelcius = function () { return _this; };
+        _this.toDelisle = function () { return new Delisle_1.Delisle((100 - _this.value) * 1.5); };
+        _this.toFahrenheit = function () { return new Fahrenheit_1.Fahrenheit((_this.value * 9 / 5) + 32); };
+        _this.toKelvin = function () { return new Kelvin_1.Kelvin(_this.value + 273.15); };
+        _this.toNewton = function () { return new Newton_1.Newton(_this.value * 33 / 100); };
+        _this.toRankine = function () { return new Rankine_1.Rankine(1.8 * _this.value + 491.67); };
+        _this.toReamur = function () { return new Reamur_1.Reamur(_this.value * 0.8); };
+        _this.toRomer = function () { return new Romer_1.Romer(_this.value * 21 / 40 + 7.5); };
+        _this.unit = Celcius.unit;
+        return _this;
+    }
+    Celcius.unit = {
+        name: 'Celcius',
+        code: '°C'
+    };
+    return Celcius;
+}(Temperature_1.default));
+exports.Celcius = Celcius;
+
+
+/***/ }),
+
+/***/ "./node_modules/@khanisak/temperature-converter/dist/class/Delisle.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@khanisak/temperature-converter/dist/class/Delisle.js ***!
+  \****************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Delisle = void 0;
+var Temperature_1 = __importDefault(__webpack_require__(/*! ./Temperature */ "./node_modules/@khanisak/temperature-converter/dist/class/Temperature.js"));
+var Celcius_1 = __webpack_require__(/*! ./Celcius */ "./node_modules/@khanisak/temperature-converter/dist/class/Celcius.js");
+var Fahrenheit_1 = __webpack_require__(/*! ./Fahrenheit */ "./node_modules/@khanisak/temperature-converter/dist/class/Fahrenheit.js");
+var Kelvin_1 = __webpack_require__(/*! ./Kelvin */ "./node_modules/@khanisak/temperature-converter/dist/class/Kelvin.js");
+var Newton_1 = __webpack_require__(/*! ./Newton */ "./node_modules/@khanisak/temperature-converter/dist/class/Newton.js");
+var Reamur_1 = __webpack_require__(/*! ./Reamur */ "./node_modules/@khanisak/temperature-converter/dist/class/Reamur.js");
+var Rankine_1 = __webpack_require__(/*! ./Rankine */ "./node_modules/@khanisak/temperature-converter/dist/class/Rankine.js");
+var Romer_1 = __webpack_require__(/*! ./Romer */ "./node_modules/@khanisak/temperature-converter/dist/class/Romer.js");
+var Delisle = /** @class */ (function (_super) {
+    __extends(Delisle, _super);
+    function Delisle(value) {
+        var _this = _super.call(this, value) || this;
+        _this.toCelcius = function () { return new Celcius_1.Celcius(100 - _this.value * 2 / 3); };
+        _this.toDelisle = function () { return _this; };
+        _this.toFahrenheit = function () { return new Fahrenheit_1.Fahrenheit(212 - _this.value * 1.2); };
+        _this.toKelvin = function () { return new Kelvin_1.Kelvin(373.15 - _this.value * 2 / 3); };
+        _this.toNewton = function () { return new Newton_1.Newton(33 - _this.value * 0.22); };
+        _this.toRankine = function () { return new Rankine_1.Rankine(671.67 - _this.value * 1.2); };
+        _this.toReamur = function () { return new Reamur_1.Reamur(80 - _this.value * 8 / 15); };
+        _this.toRomer = function () { return new Romer_1.Romer(60 - _this.value * 0.35); };
+        _this.unit = Delisle.unit;
+        return _this;
+    }
+    Delisle.unit = {
+        name: 'Delisle',
+        code: '°De'
+    };
+    return Delisle;
+}(Temperature_1.default));
+exports.Delisle = Delisle;
+
+
+/***/ }),
+
+/***/ "./node_modules/@khanisak/temperature-converter/dist/class/Fahrenheit.js":
+/*!*******************************************************************************!*\
+  !*** ./node_modules/@khanisak/temperature-converter/dist/class/Fahrenheit.js ***!
+  \*******************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Fahrenheit = void 0;
+var Temperature_1 = __importDefault(__webpack_require__(/*! ./Temperature */ "./node_modules/@khanisak/temperature-converter/dist/class/Temperature.js"));
+var Celcius_1 = __webpack_require__(/*! ./Celcius */ "./node_modules/@khanisak/temperature-converter/dist/class/Celcius.js");
+var Delisle_1 = __webpack_require__(/*! ./Delisle */ "./node_modules/@khanisak/temperature-converter/dist/class/Delisle.js");
+var Kelvin_1 = __webpack_require__(/*! ./Kelvin */ "./node_modules/@khanisak/temperature-converter/dist/class/Kelvin.js");
+var Newton_1 = __webpack_require__(/*! ./Newton */ "./node_modules/@khanisak/temperature-converter/dist/class/Newton.js");
+var Reamur_1 = __webpack_require__(/*! ./Reamur */ "./node_modules/@khanisak/temperature-converter/dist/class/Reamur.js");
+var Rankine_1 = __webpack_require__(/*! ./Rankine */ "./node_modules/@khanisak/temperature-converter/dist/class/Rankine.js");
+var Romer_1 = __webpack_require__(/*! ./Romer */ "./node_modules/@khanisak/temperature-converter/dist/class/Romer.js");
+var Fahrenheit = /** @class */ (function (_super) {
+    __extends(Fahrenheit, _super);
+    function Fahrenheit(value) {
+        var _this = _super.call(this, value) || this;
+        _this.toCelcius = function () { return new Celcius_1.Celcius((_this.value - 32) * 5 / 9); };
+        _this.toDelisle = function () { return new Delisle_1.Delisle((212 - _this.value) * 5 / 6); };
+        _this.toFahrenheit = function () { return _this; };
+        _this.toKelvin = function () { return new Kelvin_1.Kelvin(((_this.value - 32) * 5 / 9) + 273.15); };
+        _this.toNewton = function () { return new Newton_1.Newton((_this.value - 32) * 11 / 60); };
+        _this.toRankine = function () { return new Rankine_1.Rankine(_this.value + 459.67); };
+        _this.toReamur = function () { return new Reamur_1.Reamur((_this.value - 32) * 0.44); };
+        _this.toRomer = function () { return new Romer_1.Romer((_this.value - 32) * 7 / 24 + 7.5); };
+        _this.unit = Fahrenheit.unit;
+        return _this;
+    }
+    Fahrenheit.unit = {
+        name: 'Fahrenheit',
+        code: '°F'
+    };
+    return Fahrenheit;
+}(Temperature_1.default));
+exports.Fahrenheit = Fahrenheit;
+
+
+/***/ }),
+
+/***/ "./node_modules/@khanisak/temperature-converter/dist/class/Kelvin.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@khanisak/temperature-converter/dist/class/Kelvin.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Kelvin = void 0;
+var Temperature_1 = __importDefault(__webpack_require__(/*! ./Temperature */ "./node_modules/@khanisak/temperature-converter/dist/class/Temperature.js"));
+var Celcius_1 = __webpack_require__(/*! ./Celcius */ "./node_modules/@khanisak/temperature-converter/dist/class/Celcius.js");
+var Delisle_1 = __webpack_require__(/*! ./Delisle */ "./node_modules/@khanisak/temperature-converter/dist/class/Delisle.js");
+var Fahrenheit_1 = __webpack_require__(/*! ./Fahrenheit */ "./node_modules/@khanisak/temperature-converter/dist/class/Fahrenheit.js");
+var Newton_1 = __webpack_require__(/*! ./Newton */ "./node_modules/@khanisak/temperature-converter/dist/class/Newton.js");
+var Reamur_1 = __webpack_require__(/*! ./Reamur */ "./node_modules/@khanisak/temperature-converter/dist/class/Reamur.js");
+var Rankine_1 = __webpack_require__(/*! ./Rankine */ "./node_modules/@khanisak/temperature-converter/dist/class/Rankine.js");
+var Romer_1 = __webpack_require__(/*! ./Romer */ "./node_modules/@khanisak/temperature-converter/dist/class/Romer.js");
+var Kelvin = /** @class */ (function (_super) {
+    __extends(Kelvin, _super);
+    function Kelvin(value) {
+        var _this = _super.call(this, value) || this;
+        _this.toCelcius = function () { return new Celcius_1.Celcius(_this.value - 273.15); };
+        _this.toDelisle = function () { return new Delisle_1.Delisle((373.15 - _this.value) * 1.5); };
+        _this.toFahrenheit = function () { return new Fahrenheit_1.Fahrenheit(((_this.value - 273.15) * 9 / 5) + 32); };
+        _this.toKelvin = function () { return _this; };
+        _this.toNewton = function () { return new Newton_1.Newton((_this.value - 273.15) * 33 / 100); };
+        _this.toRankine = function () { return new Rankine_1.Rankine(_this.value * 1.8); };
+        _this.toReamur = function () { return new Reamur_1.Reamur((_this.value - 273.15) * 0.8); };
+        _this.toRomer = function () { return new Romer_1.Romer(_this.value * 1.8 - 459.67); };
+        _this.unit = Kelvin.unit;
+        return _this;
+    }
+    Kelvin.unit = {
+        name: 'Kelvin',
+        code: '°K'
+    };
+    return Kelvin;
+}(Temperature_1.default));
+exports.Kelvin = Kelvin;
+
+
+/***/ }),
+
+/***/ "./node_modules/@khanisak/temperature-converter/dist/class/Newton.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@khanisak/temperature-converter/dist/class/Newton.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Newton = void 0;
+var Celcius_1 = __webpack_require__(/*! ./Celcius */ "./node_modules/@khanisak/temperature-converter/dist/class/Celcius.js");
+var Delisle_1 = __webpack_require__(/*! ./Delisle */ "./node_modules/@khanisak/temperature-converter/dist/class/Delisle.js");
+var Fahrenheit_1 = __webpack_require__(/*! ./Fahrenheit */ "./node_modules/@khanisak/temperature-converter/dist/class/Fahrenheit.js");
+var Kelvin_1 = __webpack_require__(/*! ./Kelvin */ "./node_modules/@khanisak/temperature-converter/dist/class/Kelvin.js");
+var Rankine_1 = __webpack_require__(/*! ./Rankine */ "./node_modules/@khanisak/temperature-converter/dist/class/Rankine.js");
+var Reamur_1 = __webpack_require__(/*! ./Reamur */ "./node_modules/@khanisak/temperature-converter/dist/class/Reamur.js");
+var Romer_1 = __webpack_require__(/*! ./Romer */ "./node_modules/@khanisak/temperature-converter/dist/class/Romer.js");
+var Temperature_1 = __importDefault(__webpack_require__(/*! ./Temperature */ "./node_modules/@khanisak/temperature-converter/dist/class/Temperature.js"));
+var Newton = /** @class */ (function (_super) {
+    __extends(Newton, _super);
+    function Newton(value) {
+        var _this = _super.call(this, value) || this;
+        _this.toCelcius = function () { return new Celcius_1.Celcius(_this.value * 100 / 33); };
+        _this.toDelisle = function () { return new Delisle_1.Delisle((33 - _this.value) * 50 / 11); };
+        _this.toFahrenheit = function () { return new Fahrenheit_1.Fahrenheit(_this.value * 60 / 11 + 32); };
+        _this.toKelvin = function () { return new Kelvin_1.Kelvin(_this.value * 100 / 33 + 273.15); };
+        _this.toNewton = function () { return _this; };
+        _this.toReamur = function () { return new Reamur_1.Reamur(_this.value * 80 / 33); };
+        _this.toRankine = function () { return new Rankine_1.Rankine(_this.value * 60 / 11 + 491.67); };
+        _this.toRomer = function () { return new Romer_1.Romer(_this.value * 35 / 22 + 7.5); };
+        _this.unit = Newton.unit;
+        return _this;
+    }
+    Newton.unit = {
+        name: 'Newton',
+        code: '°N'
+    };
+    return Newton;
+}(Temperature_1.default));
+exports.Newton = Newton;
+
+
+/***/ }),
+
+/***/ "./node_modules/@khanisak/temperature-converter/dist/class/Rankine.js":
+/*!****************************************************************************!*\
+  !*** ./node_modules/@khanisak/temperature-converter/dist/class/Rankine.js ***!
+  \****************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Rankine = void 0;
+var Celcius_1 = __webpack_require__(/*! ./Celcius */ "./node_modules/@khanisak/temperature-converter/dist/class/Celcius.js");
+var Delisle_1 = __webpack_require__(/*! ./Delisle */ "./node_modules/@khanisak/temperature-converter/dist/class/Delisle.js");
+var Fahrenheit_1 = __webpack_require__(/*! ./Fahrenheit */ "./node_modules/@khanisak/temperature-converter/dist/class/Fahrenheit.js");
+var Kelvin_1 = __webpack_require__(/*! ./Kelvin */ "./node_modules/@khanisak/temperature-converter/dist/class/Kelvin.js");
+var Newton_1 = __webpack_require__(/*! ./Newton */ "./node_modules/@khanisak/temperature-converter/dist/class/Newton.js");
+var Reamur_1 = __webpack_require__(/*! ./Reamur */ "./node_modules/@khanisak/temperature-converter/dist/class/Reamur.js");
+var Romer_1 = __webpack_require__(/*! ./Romer */ "./node_modules/@khanisak/temperature-converter/dist/class/Romer.js");
+var Temperature_1 = __importDefault(__webpack_require__(/*! ./Temperature */ "./node_modules/@khanisak/temperature-converter/dist/class/Temperature.js"));
+var Rankine = /** @class */ (function (_super) {
+    __extends(Rankine, _super);
+    function Rankine(value) {
+        var _this = _super.call(this, value) || this;
+        _this.toCelcius = function () { return new Celcius_1.Celcius(_this.value / 1.8 + 273.15); };
+        _this.toDelisle = function () { return new Delisle_1.Delisle((671.67 - _this.value) * 5 / 6); };
+        _this.toFahrenheit = function () { return new Fahrenheit_1.Fahrenheit(_this.value - 459.67); };
+        _this.toKelvin = function () { return new Kelvin_1.Kelvin(_this.value / 1.8); };
+        _this.toNewton = function () { return new Newton_1.Newton((_this.value - 491.67) * 11 / 60); };
+        _this.toRankine = function () { return _this; };
+        _this.toReamur = function () { return new Reamur_1.Reamur((_this.value / 1.8 + 273.15) * 0.8); };
+        _this.toRomer = function () { return new Romer_1.Romer((_this.value - 491.67) * 7 / 24 + 7.5); };
+        _this.unit = Rankine.unit;
+        return _this;
+    }
+    Rankine.unit = {
+        name: 'Rankine',
+        code: '°Ra'
+    };
+    return Rankine;
+}(Temperature_1.default));
+exports.Rankine = Rankine;
+
+
+/***/ }),
+
+/***/ "./node_modules/@khanisak/temperature-converter/dist/class/Reamur.js":
+/*!***************************************************************************!*\
+  !*** ./node_modules/@khanisak/temperature-converter/dist/class/Reamur.js ***!
+  \***************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Reamur = void 0;
+var Celcius_1 = __webpack_require__(/*! ./Celcius */ "./node_modules/@khanisak/temperature-converter/dist/class/Celcius.js");
+var Delisle_1 = __webpack_require__(/*! ./Delisle */ "./node_modules/@khanisak/temperature-converter/dist/class/Delisle.js");
+var Fahrenheit_1 = __webpack_require__(/*! ./Fahrenheit */ "./node_modules/@khanisak/temperature-converter/dist/class/Fahrenheit.js");
+var Kelvin_1 = __webpack_require__(/*! ./Kelvin */ "./node_modules/@khanisak/temperature-converter/dist/class/Kelvin.js");
+var Newton_1 = __webpack_require__(/*! ./Newton */ "./node_modules/@khanisak/temperature-converter/dist/class/Newton.js");
+var Rankine_1 = __webpack_require__(/*! ./Rankine */ "./node_modules/@khanisak/temperature-converter/dist/class/Rankine.js");
+var Romer_1 = __webpack_require__(/*! ./Romer */ "./node_modules/@khanisak/temperature-converter/dist/class/Romer.js");
+var Temperature_1 = __importDefault(__webpack_require__(/*! ./Temperature */ "./node_modules/@khanisak/temperature-converter/dist/class/Temperature.js"));
+var Reamur = /** @class */ (function (_super) {
+    __extends(Reamur, _super);
+    function Reamur(value) {
+        var _this = _super.call(this, value) || this;
+        _this.toCelcius = function () { return new Celcius_1.Celcius(_this.value / 0.8); };
+        _this.toDelisle = function () { return new Delisle_1.Delisle((80 - _this.value) * 1.875); };
+        _this.toFahrenheit = function () { return new Fahrenheit_1.Fahrenheit(_this.value * 2.25 + 32); };
+        _this.toKelvin = function () { return new Kelvin_1.Kelvin(_this.value / 0.8 + 273.15); };
+        _this.toNewton = function () { return new Newton_1.Newton(_this.value * 33 / 80); };
+        _this.toRankine = function () { return new Rankine_1.Rankine(_this.value * 2.25 + 491.67); };
+        _this.toReamur = function () { return _this; };
+        _this.toRomer = function () { return new Romer_1.Romer(_this.value * 21 / 32 + 7.5); };
+        _this.unit = Reamur.unit;
+        return _this;
+    }
+    Reamur.unit = {
+        name: 'Réamur',
+        code: '°Ré'
+    };
+    return Reamur;
+}(Temperature_1.default));
+exports.Reamur = Reamur;
+
+
+/***/ }),
+
+/***/ "./node_modules/@khanisak/temperature-converter/dist/class/Romer.js":
+/*!**************************************************************************!*\
+  !*** ./node_modules/@khanisak/temperature-converter/dist/class/Romer.js ***!
+  \**************************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+"use strict";
+
+var __extends = (this && this.__extends) || (function () {
+    var extendStatics = function (d, b) {
+        extendStatics = Object.setPrototypeOf ||
+            ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
+            function (d, b) { for (var p in b) if (Object.prototype.hasOwnProperty.call(b, p)) d[p] = b[p]; };
+        return extendStatics(d, b);
+    };
+    return function (d, b) {
+        if (typeof b !== "function" && b !== null)
+            throw new TypeError("Class extends value " + String(b) + " is not a constructor or null");
+        extendStatics(d, b);
+        function __() { this.constructor = d; }
+        d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+    };
+})();
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Romer = void 0;
+var Celcius_1 = __webpack_require__(/*! ./Celcius */ "./node_modules/@khanisak/temperature-converter/dist/class/Celcius.js");
+var Delisle_1 = __webpack_require__(/*! ./Delisle */ "./node_modules/@khanisak/temperature-converter/dist/class/Delisle.js");
+var Fahrenheit_1 = __webpack_require__(/*! ./Fahrenheit */ "./node_modules/@khanisak/temperature-converter/dist/class/Fahrenheit.js");
+var Kelvin_1 = __webpack_require__(/*! ./Kelvin */ "./node_modules/@khanisak/temperature-converter/dist/class/Kelvin.js");
+var Newton_1 = __webpack_require__(/*! ./Newton */ "./node_modules/@khanisak/temperature-converter/dist/class/Newton.js");
+var Rankine_1 = __webpack_require__(/*! ./Rankine */ "./node_modules/@khanisak/temperature-converter/dist/class/Rankine.js");
+var Reamur_1 = __webpack_require__(/*! ./Reamur */ "./node_modules/@khanisak/temperature-converter/dist/class/Reamur.js");
+var Temperature_1 = __importDefault(__webpack_require__(/*! ./Temperature */ "./node_modules/@khanisak/temperature-converter/dist/class/Temperature.js"));
+var Romer = /** @class */ (function (_super) {
+    __extends(Romer, _super);
+    function Romer(value) {
+        var _this = _super.call(this, value) || this;
+        _this.toCelcius = function () { return new Celcius_1.Celcius((_this.value - 7.5) * 40 / 21); };
+        _this.toDelisle = function () { return new Delisle_1.Delisle((60 - _this.value) * 20 / 7); };
+        _this.toFahrenheit = function () { return new Fahrenheit_1.Fahrenheit((_this.value - 7.5) * 24 / 7 + 32); };
+        _this.toKelvin = function () { return new Kelvin_1.Kelvin((_this.value - 7.5) * 40 / 21 + 273.15); };
+        _this.toNewton = function () { return new Newton_1.Newton((_this.value - 7.5) * 22 / 35); };
+        _this.toRankine = function () { return new Rankine_1.Rankine((_this.value - 7.5) * 24 / 7 + 491.67); };
+        _this.toReamur = function () { return new Reamur_1.Reamur((_this.value - 7.5) * 32 / 21); };
+        _this.toRomer = function () { return _this; };
+        _this.unit = Romer.unit;
+        return _this;
+    }
+    Romer.unit = {
+        name: 'Rømer',
+        code: '°Rø'
+    };
+    return Romer;
+}(Temperature_1.default));
+exports.Romer = Romer;
+
+
+/***/ }),
+
+/***/ "./node_modules/@khanisak/temperature-converter/dist/class/Temperature.js":
+/*!********************************************************************************!*\
+  !*** ./node_modules/@khanisak/temperature-converter/dist/class/Temperature.js ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Temperatures = void 0;
+var Temperatures;
+(function (Temperatures) {
+    Temperatures[Temperatures["Celcius"] = 0] = "Celcius";
+    Temperatures[Temperatures["Fahrenheit"] = 1] = "Fahrenheit";
+    Temperatures[Temperatures["Kelvin"] = 2] = "Kelvin";
+    Temperatures[Temperatures["Reamur"] = 3] = "Reamur";
+    Temperatures[Temperatures["Newton"] = 4] = "Newton";
+    Temperatures[Temperatures["Rankine"] = 5] = "Rankine";
+    Temperatures[Temperatures["Delisle"] = 6] = "Delisle";
+    Temperatures[Temperatures["Romer"] = 7] = "Romer";
+})(Temperatures = exports.Temperatures || (exports.Temperatures = {}));
+var Temperature = /** @class */ (function () {
+    function Temperature(value) {
+        this.value = value;
+    }
+    return Temperature;
+}());
+exports["default"] = Temperature;
+
+
+/***/ }),
+
+/***/ "./node_modules/@khanisak/temperature-converter/dist/index.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@khanisak/temperature-converter/dist/index.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.units = exports.Romer = exports.Reamur = exports.Rankine = exports.Newton = exports.Kelvin = exports.Fahrenheit = exports.Delisle = exports.Celcius = void 0;
+var Celcius_1 = __webpack_require__(/*! ./class/Celcius */ "./node_modules/@khanisak/temperature-converter/dist/class/Celcius.js");
+Object.defineProperty(exports, "Celcius", ({ enumerable: true, get: function () { return Celcius_1.Celcius; } }));
+var Delisle_1 = __webpack_require__(/*! ./class/Delisle */ "./node_modules/@khanisak/temperature-converter/dist/class/Delisle.js");
+Object.defineProperty(exports, "Delisle", ({ enumerable: true, get: function () { return Delisle_1.Delisle; } }));
+var Fahrenheit_1 = __webpack_require__(/*! ./class/Fahrenheit */ "./node_modules/@khanisak/temperature-converter/dist/class/Fahrenheit.js");
+Object.defineProperty(exports, "Fahrenheit", ({ enumerable: true, get: function () { return Fahrenheit_1.Fahrenheit; } }));
+var Kelvin_1 = __webpack_require__(/*! ./class/Kelvin */ "./node_modules/@khanisak/temperature-converter/dist/class/Kelvin.js");
+Object.defineProperty(exports, "Kelvin", ({ enumerable: true, get: function () { return Kelvin_1.Kelvin; } }));
+var Newton_1 = __webpack_require__(/*! ./class/Newton */ "./node_modules/@khanisak/temperature-converter/dist/class/Newton.js");
+Object.defineProperty(exports, "Newton", ({ enumerable: true, get: function () { return Newton_1.Newton; } }));
+var Rankine_1 = __webpack_require__(/*! ./class/Rankine */ "./node_modules/@khanisak/temperature-converter/dist/class/Rankine.js");
+Object.defineProperty(exports, "Rankine", ({ enumerable: true, get: function () { return Rankine_1.Rankine; } }));
+var Reamur_1 = __webpack_require__(/*! ./class/Reamur */ "./node_modules/@khanisak/temperature-converter/dist/class/Reamur.js");
+Object.defineProperty(exports, "Reamur", ({ enumerable: true, get: function () { return Reamur_1.Reamur; } }));
+var Romer_1 = __webpack_require__(/*! ./class/Romer */ "./node_modules/@khanisak/temperature-converter/dist/class/Romer.js");
+Object.defineProperty(exports, "Romer", ({ enumerable: true, get: function () { return Romer_1.Romer; } }));
+var units_1 = __webpack_require__(/*! ./units */ "./node_modules/@khanisak/temperature-converter/dist/units.js");
+Object.defineProperty(exports, "units", ({ enumerable: true, get: function () { return units_1.units; } }));
+
+
+/***/ }),
+
+/***/ "./node_modules/@khanisak/temperature-converter/dist/units.js":
+/*!********************************************************************!*\
+  !*** ./node_modules/@khanisak/temperature-converter/dist/units.js ***!
+  \********************************************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+"use strict";
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.units = void 0;
+var Celcius_1 = __webpack_require__(/*! ./class/Celcius */ "./node_modules/@khanisak/temperature-converter/dist/class/Celcius.js");
+var Delisle_1 = __webpack_require__(/*! ./class/Delisle */ "./node_modules/@khanisak/temperature-converter/dist/class/Delisle.js");
+var Fahrenheit_1 = __webpack_require__(/*! ./class/Fahrenheit */ "./node_modules/@khanisak/temperature-converter/dist/class/Fahrenheit.js");
+var Kelvin_1 = __webpack_require__(/*! ./class/Kelvin */ "./node_modules/@khanisak/temperature-converter/dist/class/Kelvin.js");
+var Newton_1 = __webpack_require__(/*! ./class/Newton */ "./node_modules/@khanisak/temperature-converter/dist/class/Newton.js");
+var Reamur_1 = __webpack_require__(/*! ./class/Reamur */ "./node_modules/@khanisak/temperature-converter/dist/class/Reamur.js");
+var Rankine_1 = __webpack_require__(/*! ./class/Rankine */ "./node_modules/@khanisak/temperature-converter/dist/class/Rankine.js");
+var Romer_1 = __webpack_require__(/*! ./class/Romer */ "./node_modules/@khanisak/temperature-converter/dist/class/Romer.js");
+exports.units = [
+    Celcius_1.Celcius.unit,
+    Delisle_1.Delisle.unit,
+    Fahrenheit_1.Fahrenheit.unit,
+    Kelvin_1.Kelvin.unit,
+    Reamur_1.Reamur.unit,
+    Newton_1.Newton.unit,
+    Rankine_1.Rankine.unit,
+    Romer_1.Romer.unit,
+];
 
 
 /***/ })
@@ -238,8 +824,10 @@ var __webpack_exports__ = {};
   !*** ./src/index.js ***!
   \**********************/
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var _weather__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./weather */ "./src/weather.js");
-/* harmony import */ var _weatherBackground__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./weatherBackground */ "./src/weatherBackground.js");
+/* harmony import */ var _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @khanisak/temperature-converter */ "./node_modules/@khanisak/temperature-converter/dist/index.js");
+/* harmony import */ var _weather__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./weather */ "./src/weather.js");
+/* harmony import */ var _weatherBackground__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./weatherBackground */ "./src/weatherBackground.js");
+
 
 
 
@@ -255,6 +843,12 @@ const humidity = document.querySelector('#humidity');
 const sunrise = document.querySelector('#sunrise');
 const sunset = document.querySelector('#sunset');
 
+let isFahrenheit = true;
+let kelvins;
+let kelvinsFeelsLike;
+const forecastKelvins = [];
+const forecastTemperatures =  [];
+
 searchBar.addEventListener('keyup', (e) => {
   if (e.key === 'Enter') {
     search();
@@ -263,18 +857,19 @@ searchBar.addEventListener('keyup', (e) => {
 searchIcon.addEventListener('click', search);
 
 async function setWeather(city) {
-  const data = await (0,_weather__WEBPACK_IMPORTED_MODULE_0__.getWeather)(city);
+  const data = await (0,_weather__WEBPACK_IMPORTED_MODULE_1__.getWeather)(city);
   if (data instanceof Error) return;
 
+  kelvins = data.temp;
+  kelvinsFeelsLike = data.feelsLike;
+
   name.textContent = data.name;
-  temp.textContent = data.temp;
   description.textContent = data.description;
-  feelsLike.textContent = `Feels like: ${data.feelsLike}°`;
   humidity.textContent = `Humidity: ${data.humidity}%`;
   sunrise.textContent = `Sunrise: ${data.sunrise}`;
   sunset.textContent = `Sunset: ${data.sunset}`;
 
-  (0,_weatherBackground__WEBPACK_IMPORTED_MODULE_1__["default"])(data.code);
+  (0,_weatherBackground__WEBPACK_IMPORTED_MODULE_2__["default"])(data.code);
 
   weatherContainer.classList.remove('hidden');
 }
@@ -282,47 +877,61 @@ async function setWeather(city) {
 const forecastContainer = document.querySelector('#forecast-container');
 
 async function setForecast(city) {
-  const forecast = await (0,_weather__WEBPACK_IMPORTED_MODULE_0__.getForecast)(city);
+  const forecast = await (0,_weather__WEBPACK_IMPORTED_MODULE_1__.getForecast)(city);
   if (forecast instanceof Error) return;
   forecastContainer.innerHTML = '';
 
-  forecast.forEach((window) => {
+  forecast.forEach((window, index) => {
     const box = document.createElement('div');
     const time = document.createElement('p');
     const icon = document.createElement('img');
-    const temperature = document.createElement('h4');
+    forecastTemperatures[index] = document.createElement('h4');
 
     time.textContent = window.time;
     icon.src = window.iconURL;
     icon.classList.add('forecast-icon');
-    temperature.textContent = window.temp;
+    forecastKelvins[index] = window.temp;
 
     box.appendChild(time);
     box.appendChild(icon);
-    box.appendChild(temperature);
+    box.appendChild(forecastTemperatures[index]);
 
     forecastContainer.appendChild(box);
     forecastContainer.classList.remove('hidden');
   });
 }
 
-function search() {
-  console.log(searchBar.value);
+async function search() {
   setWeather(searchBar.value);
-  setForecast(searchBar.value);
-  // searchBar.value = '';
+  await setForecast(searchBar.value);
+  convertTemperatures();
 }
 
 const slider = document.querySelector('.slider');
-slider.addEventListener('click', handleUnit);
+slider.addEventListener('click', toggleUnit);
 
 
-function handleUnit() {
+function toggleUnit() {
   // default is Fahrenheit
   slider.classList.toggle('celsius');
-  (0,_weather__WEBPACK_IMPORTED_MODULE_0__.toggleUnit)();
-  setWeather(searchBar.value);
-  setForecast(searchBar.value);
+  isFahrenheit = !isFahrenheit;
+  convertTemperatures();
+}
+
+function convertTemperatures() {
+  if (isFahrenheit) {
+    temp.textContent = `${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(kelvins).toFahrenheit().value)}°F`;
+    feelsLike.textContent = `Feels like: ${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(kelvinsFeelsLike).toFahrenheit().value)}°F`;
+    forecastKelvins.forEach((forecastKelvin, index) => {
+      forecastTemperatures[index].textContent = `${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(forecastKelvin).toFahrenheit().value)}°F`;
+    })
+  } else {
+    temp.textContent = `${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(kelvins).toCelcius().value)}°C`;
+    feelsLike.textContent = `Feels like: ${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(kelvinsFeelsLike).toCelcius().value)}°C`;
+    forecastKelvins.forEach((forecastKelvin, index) => {
+      forecastTemperatures[index].textContent = `${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(forecastKelvin).toCelcius().value)}°C`;
+    })
+  }
 }
 })();
 

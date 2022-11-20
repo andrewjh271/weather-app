@@ -25,6 +25,7 @@
     "webpack-dev-server": "^4.11.1"
   },
   "dependencies": {
+    "@khanisak/temperature-converter": "^2.0.1",
     "dayjs": "^1.11.6"
   }
 }
