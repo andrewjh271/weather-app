@@ -39,6 +39,31 @@ header {
   }
 }
 
+footer {
+  position: absolute;
+  bottom: 0;
+  height: 36px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 10px;
+  background-color: #81aacca8;
+
+  p {
+    font-size: 16px;
+  }
+
+  a {
+    color: #e1e1e2;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}
+
 .hidden {
   display: none !important;
 }
