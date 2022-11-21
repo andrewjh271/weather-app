@@ -37,7 +37,7 @@
   width: 26px;
   left: 4px;
   bottom: 4px;
-  background-color: white;
+  background-color: #e0e6ed;
   -webkit-transition: .4s;
   transition: .4s;
 }
@@ -46,15 +46,7 @@
   content: "C";
   padding-left: 6px;
   color: white;
-  background-color: black;
-}
-
-input:checked + .slider {
-  background-color: #2196F3;
-}
-
-input:focus + .slider {
-  box-shadow: 0 0 1px #2196F3;
+  background-color: #263635;
 }
 
 input:checked + .slider:before {
