@@ -26,23 +26,25 @@
   background-color: #4589b7;
   -webkit-transition: .4s;
   transition: .4s;
+  font-size: 18px;
 }
 
 .slider:before {
   position: absolute;
-  content: "F°";
-  padding: 4px 5px;
+  content: "F";
+  padding: 2px 7px;
   height: 26px;
   width: 26px;
   left: 4px;
   bottom: 4px;
   background-color: white;
   -webkit-transition: .4s;
-  transition: .6s;
+  transition: .4s;
 }
 
 .celsius.slider:before {
-  content: "C°";
+  content: "C";
+  padding-left: 6px;
   color: white;
   background-color: black;
 }

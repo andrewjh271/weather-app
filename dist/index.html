@@ -3,13 +3,18 @@
   <head>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta charset="utf-8" />
-    <title>Weather!</title>
+    <title>Weather</title>
+    <link rel="icon" href="/favicon.ico" sizes="any">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="stylesheet" href="stylesheets/style.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet">
   </head>
 
   <body>
     <header>
-      <h2>Weather!</h2>
+      <h1>Weather</h1>
       <div>
         <input id="search">
         <ion-icon name="search-outline" id="search-icon"></ion-icon>
@@ -23,9 +28,9 @@
     </header>
 
     <div id="weather-container" class="hidden">
-      <h3 id="name"></h3>
+      <h2 id="name"></h2>
       <h2 id="temp"></h2>
-      <h4 id="description"></h4>
+      <i><h4 id="description"></h4></i>
       <div class="details">
         <div>
           <h4 id="feels-like"></h4>
