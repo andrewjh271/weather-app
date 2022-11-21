@@ -56,7 +56,7 @@ const key = 'dcee472b5a49e727dac8badc44404b52';
 async function getCoords(city) {
   try {
     const response = await fetch(
-      `http://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${key}&limit=1`,
+      `https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${key}&limit=1`,
       { mode: 'cors' }
     );
     const parsed = await response.json();
@@ -105,7 +105,7 @@ async function getForecast(location) {
     const localTime = parsed.city.timezone;
     return parsed.list.map((forecast) => ({
       temp: forecast.main.temp,
-      iconURL: `http://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`,
+      iconURL: `https://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`,
       time: dayjs
         .unix(forecast.dt + localTime)
         .tz()
