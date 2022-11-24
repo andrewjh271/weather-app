@@ -25,6 +25,16 @@ h4 {
   text-align: center;
 }
 
+.mobile-only {
+  display: none;
+}
+
+@media (max-width: 750px) {
+  .mobile-only {
+    display: block;
+  }
+}
+
 header {
   display: flex;
   align-items: center;
@@ -36,6 +46,12 @@ header {
   h1 {
     margin: 0;
     font-size: 32px;
+  }
+  
+  @media (max-width: 750px) {
+    h1 {
+      display: none;
+    }
   }
 }
 
@@ -60,6 +76,16 @@ footer {
 
     &:hover {
       text-decoration: underline;
+    }
+  }
+}
+
+@media (max-width: 750px) {
+  footer {
+    justify-content: space-between;
+
+    p {
+      font-size: 13px;
     }
   }
 }
@@ -116,6 +142,13 @@ footer {
   }
 }
 
+@media (max-width: 750px) {
+  #weather-container {
+    width: auto;
+    margin-top: 140px;
+  }
+}
+
 .details {
   display: flex;
   justify-content: center;
@@ -157,4 +190,15 @@ footer {
 .forecast-icon {
   width: 70px;
   height: 70px;
+}
+
+@media (max-width: 750px) {
+  #forecast-container {
+    width: auto;
+
+    .forecast-icon {
+      width: 50px;
+      height: 50px;
+    }
+  }
 }
