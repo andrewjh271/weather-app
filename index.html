@@ -14,7 +14,7 @@
 
   <body>
     <header>
-      <h1>Weather</h1>
+      <h1 class="full-view-only">Weather</h1>
       <div>
         <input id="search">
         <ion-icon name="search-outline" id="search-icon"></ion-icon>
@@ -27,23 +27,25 @@
 
     </header>
 
-    <div id="weather-container" class="hidden">
-      <h2 id="name"></h2>
-      <h2 id="temp"></h2>
-      <i><h4 id="description"></h4></i>
-      <div class="details">
-        <div>
-          <h4 id="feels-like"></h4>
-          <h4 id="humidity"></h4>
-        </div>
-        <div>
-          <h4 id="sunrise"></h4>
-          <h4 id="sunset"></h4>
+    <div id="main-container">
+      <div id="weather-container" class="hidden">
+        <h2 id="name"></h2>
+        <h2 id="temp"></h2>
+        <i><h4 id="description"></h4></i>
+        <div class="details">
+          <div>
+            <h4 id="feels-like"></h4>
+            <h4 id="humidity"></h4>
+          </div>
+          <div>
+            <h4 id="sunrise"></h4>
+            <h4 id="sunset"></h4>
+          </div>
         </div>
       </div>
+  
+      <div id="forecast-container" class="hidden"></div>
     </div>
-
-    <div id="forecast-container" class="hidden"></div>
 
     <footer>
       <h4 class="mobile-only">Weather App</h4>
