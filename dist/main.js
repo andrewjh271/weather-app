@@ -31,6 +31,18 @@
 
 /***/ }),
 
+/***/ "./src/height.js":
+/*!***********************!*\
+  !*** ./src/height.js ***!
+  \***********************/
+/***/ (() => {
+
+const body = document.querySelector('body');
+
+body.style.height = `${window.innerHeight}px`;
+
+/***/ }),
+
 /***/ "./src/weather.js":
 /*!************************!*\
   !*** ./src/weather.js ***!
@@ -791,6 +803,18 @@ exports.units = [
 /******/ 	}
 /******/ 	
 /************************************************************************/
+/******/ 	/* webpack/runtime/compat get default export */
+/******/ 	(() => {
+/******/ 		// getDefaultExport function for compatibility with non-harmony modules
+/******/ 		__webpack_require__.n = (module) => {
+/******/ 			var getter = module && module.__esModule ?
+/******/ 				() => (module['default']) :
+/******/ 				() => (module);
+/******/ 			__webpack_require__.d(getter, { a: getter });
+/******/ 			return getter;
+/******/ 		};
+/******/ 	})();
+/******/ 	
 /******/ 	/* webpack/runtime/define property getters */
 /******/ 	(() => {
 /******/ 		// define getter functions for harmony exports
@@ -831,6 +855,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! @khanisak/temperature-converter */ "./node_modules/@khanisak/temperature-converter/dist/index.js");
 /* harmony import */ var _weather__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./weather */ "./src/weather.js");
 /* harmony import */ var _weatherBackground__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./weatherBackground */ "./src/weatherBackground.js");
+/* harmony import */ var _height__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./height */ "./src/height.js");
+/* harmony import */ var _height__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_height__WEBPACK_IMPORTED_MODULE_3__);
+
 
 
 

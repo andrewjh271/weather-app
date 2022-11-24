@@ -1,6 +1,7 @@
 import { Kelvin } from '@khanisak/temperature-converter';
 import { getWeather, getForecast } from './weather';
 import setBackground from './weatherBackground';
+import './height';
 
 const searchBar = document.querySelector('#search');
 const searchIcon = document.querySelector('#search-icon');
