@@ -46,6 +46,41 @@ h4 {
   }
 }
 
+#error-container {
+  position: absolute;
+  top: 60px;
+  height: 60px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  background-color: #81aacca8;
+  border-top: 1px solid #e0e0e0;
+
+  & h3 {
+    font-weight: 400;
+    display: inline-block;
+  }
+}
+
+@media (max-width: 750px) {
+  #error-container {
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 10px;
+
+    & h3 {
+      font-size: 14px;
+    }
+  }
+}
+
+#close-icon {
+  position: absolute;
+  right: 0;
+  margin: 5px;
+  font-size: 28px;
+}
+
 header {
   display: flex;
   align-items: center;
@@ -136,6 +171,7 @@ footer {
 
   &:hover {
     cursor: pointer;
+    color: #dae5ef;
   }
 }
 

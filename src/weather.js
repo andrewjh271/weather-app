@@ -1,3 +1,5 @@
+import showError from './error';
+
 const dayjs = require('dayjs');
 const utc = require('dayjs/plugin/utc');
 const timezone = require('dayjs/plugin/timezone'); // dependent on utc plugin
@@ -17,6 +19,7 @@ async function getCoords(city) {
     const parsed = await response.json();
     return [parsed[0].lat, parsed[0].lon];
   } catch (error) {
+    showError();
     return error;
   }
 }
@@ -43,6 +46,7 @@ async function getWeather(location) {
       code: parsed.weather[0].id,
     };
   } catch (error) {
+    showError();
     console.error(error);
     return error;
   }
@@ -67,6 +71,7 @@ async function getForecast(location) {
         .format('hA'),
     }));
   } catch (error) {
+    showError();
     console.error(error);
     return error;
   }
