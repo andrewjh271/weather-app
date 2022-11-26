@@ -115,7 +115,8 @@ footer {
   right: 33px;
 
   &:hover {
-    cursor: pointer;
+    transform: rotate(360deg);
+    color: #4588b7;
   }
 }
 
@@ -124,6 +125,14 @@ footer {
   font-size: 23px;
   top: 6px;
   right: 21px;
+
+  &:hover {
+    color: #dae5ef;
+  }
+}
+
+.icon {
+  transition: .4s;
 
   &:hover {
     cursor: pointer;

@@ -166,7 +166,8 @@ footer a:hover {
   right: 33px;
 }
 #search-icon:hover {
-  cursor: pointer;
+  transform: rotate(360deg);
+  color: #4588b7;
 }
 
 #location-icon {
@@ -176,6 +177,13 @@ footer a:hover {
   right: 21px;
 }
 #location-icon:hover {
+  color: #dae5ef;
+}
+
+.icon {
+  transition: 0.4s;
+}
+.icon:hover {
   cursor: pointer;
 }
 
