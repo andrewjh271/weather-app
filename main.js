@@ -31,6 +31,33 @@
 
 /***/ }),
 
+/***/ "./src/error.js":
+/*!**********************!*\
+  !*** ./src/error.js ***!
+  \**********************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ showError)
+/* harmony export */ });
+const container = document.querySelector('#error-container');
+const close = container.querySelector('#close-icon');
+
+close.addEventListener('click', hideError);
+
+function hideError() {
+  container.classList.add('hidden');
+}
+
+function showError() {
+  container.classList.remove('hidden');
+  setTimeout(() => container.classList.add('hidden'), 5000);
+}
+
+/***/ }),
+
 /***/ "./src/height.js":
 /*!***********************!*\
   !*** ./src/height.js ***!
@@ -55,6 +82,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "getForecast": () => (/* binding */ getForecast),
 /* harmony export */   "getWeather": () => (/* binding */ getWeather)
 /* harmony export */ });
+/* harmony import */ var _error__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./error */ "./src/error.js");
+
+
 const dayjs = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
 const utc = __webpack_require__(/*! dayjs/plugin/utc */ "./node_modules/dayjs/plugin/utc.js");
 const timezone = __webpack_require__(/*! dayjs/plugin/timezone */ "./node_modules/dayjs/plugin/timezone.js"); // dependent on utc plugin
@@ -74,6 +104,7 @@ async function getCoords(city) {
     const parsed = await response.json();
     return [parsed[0].lat, parsed[0].lon];
   } catch (error) {
+    (0,_error__WEBPACK_IMPORTED_MODULE_0__["default"])();
     return error;
   }
 }
@@ -100,6 +131,7 @@ async function getWeather(location) {
       code: parsed.weather[0].id,
     };
   } catch (error) {
+    (0,_error__WEBPACK_IMPORTED_MODULE_0__["default"])();
     console.error(error);
     return error;
   }
@@ -124,6 +156,7 @@ async function getForecast(location) {
         .format('hA'),
     }));
   } catch (error) {
+    (0,_error__WEBPACK_IMPORTED_MODULE_0__["default"])();
     console.error(error);
     return error;
   }
