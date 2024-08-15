@@ -1,3 +1,1 @@
-const body = document.querySelector('body');
-
-body.style.height = `${window.innerHeight}px`;
+document.body.style.height = `${window.innerHeight}px`;

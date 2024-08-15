@@ -19,7 +19,7 @@ let isFahrenheit = true;
 let kelvins;
 let kelvinsFeelsLike;
 const forecastKelvins = [];
-const forecastTemperatures =  [];
+const forecastTemperatures = [];
 
 const locationIcon = document.querySelector('#location-icon');
 
@@ -77,26 +77,28 @@ async function setForecast(location) {
   });
 }
 
-async function search() {
-  setWeather({city: searchBar.value});
-  await setForecast({city: searchBar.value});
-  convertTemperatures();
+function search() {
+  Promise.all([
+    setWeather({ city: searchBar.value }),
+    setForecast({ city: searchBar.value }),
+  ]).then(convertTemperatures);
 }
 
-async function searchUserLocation() {
+function searchUserLocation() {
   navigator.geolocation.getCurrentPosition(
-    async (position) => {
+    (position) => {
       const userCoords = [position.coords.latitude, position.coords.longitude];
-      setWeather({coords: userCoords});
-      await setForecast({coords: userCoords});
-      convertTemperatures();
+      Promise.all([
+        setWeather({ coords: userCoords }),
+        setForecast({ coords: userCoords }),
+      ]).then(convertTemperatures);
     },
-    (error) => console.error(error));
+    (error) => console.error(error)
+  );
 }
 
 const slider = document.querySelector('.slider');
 slider.addEventListener('click', toggleUnit);
-
 
 function toggleUnit() {
   // default is Fahrenheit
@@ -106,17 +108,16 @@ function toggleUnit() {
 }
 
 function convertTemperatures() {
-  if (isFahrenheit) {
-    temp.textContent = `${Math.round(new Kelvin(kelvins).toFahrenheit().value)}°F`;
-    feelsLike.textContent = `Feels like: ${Math.round(new Kelvin(kelvinsFeelsLike).toFahrenheit().value)}°F`;
-    forecastKelvins.forEach((forecastKelvin, index) => {
-      forecastTemperatures[index].textContent = `${Math.round(new Kelvin(forecastKelvin).toFahrenheit().value)}°F`;
-    })
-  } else {
-    temp.textContent = `${Math.round(new Kelvin(kelvins).toCelcius().value)}°C`;
-    feelsLike.textContent = `Feels like: ${Math.round(new Kelvin(kelvinsFeelsLike).toCelcius().value)}°C`;
-    forecastKelvins.forEach((forecastKelvin, index) => {
-      forecastTemperatures[index].textContent = `${Math.round(new Kelvin(forecastKelvin).toCelcius().value)}°C`;
-    })
-  }
+  const converter = isFahrenheit ? 'toFahrenheit' : 'toCelcius';
+  const symbol = isFahrenheit ? 'F' : 'C';
+
+  temp.textContent = `${Math.round(new Kelvin(kelvins)[converter]().value)}°${symbol}`;
+  feelsLike.textContent = `Feels like: ${Math.round(
+    new Kelvin(kelvinsFeelsLike)[converter]().value
+  )}°${symbol}`;
+  forecastKelvins.forEach((forecastKelvin, index) => {
+    forecastTemperatures[index].textContent = `${Math.round(
+      new Kelvin(forecastKelvin)[converter]().value
+    )}°${symbol}`;
+  });
 }

@@ -1,8 +1,7 @@
+import dayjs from 'dayjs';
+import utc from 'dayjs/plugin/utc';
+import timezone from 'dayjs/plugin/timezone';
 import showError from './error';
-
-const dayjs = require('dayjs');
-const utc = require('dayjs/plugin/utc');
-const timezone = require('dayjs/plugin/timezone'); // dependent on utc plugin
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -47,7 +46,6 @@ async function getWeather(location) {
     };
   } catch (error) {
     showError();
-    console.error(error);
     return error;
   }
 }
@@ -72,7 +70,6 @@ async function getForecast(location) {
     }));
   } catch (error) {
     showError();
-    console.error(error);
     return error;
   }
 }
