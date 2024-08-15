@@ -64,9 +64,8 @@ function showError() {
   \***********************/
 /***/ (() => {
 
-const body = document.querySelector('body');
+document.body.style.height = `${window.innerHeight}px`;
 
-body.style.height = `${window.innerHeight}px`;
 
 /***/ }),
 
@@ -79,19 +78,24 @@ body.style.height = `${window.innerHeight}px`;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "getForecast": () => (/* binding */ getForecast),
-/* harmony export */   "getWeather": () => (/* binding */ getWeather)
+/* harmony export */   getForecast: () => (/* binding */ getForecast),
+/* harmony export */   getWeather: () => (/* binding */ getWeather)
 /* harmony export */ });
-/* harmony import */ var _error__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./error */ "./src/error.js");
+/* harmony import */ var dayjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
+/* harmony import */ var dayjs__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(dayjs__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var dayjs_plugin_utc__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! dayjs/plugin/utc */ "./node_modules/dayjs/plugin/utc.js");
+/* harmony import */ var dayjs_plugin_utc__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(dayjs_plugin_utc__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var dayjs_plugin_timezone__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! dayjs/plugin/timezone */ "./node_modules/dayjs/plugin/timezone.js");
+/* harmony import */ var dayjs_plugin_timezone__WEBPACK_IMPORTED_MODULE_2___default = /*#__PURE__*/__webpack_require__.n(dayjs_plugin_timezone__WEBPACK_IMPORTED_MODULE_2__);
+/* harmony import */ var _error__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./error */ "./src/error.js");
 
 
-const dayjs = __webpack_require__(/*! dayjs */ "./node_modules/dayjs/dayjs.min.js");
-const utc = __webpack_require__(/*! dayjs/plugin/utc */ "./node_modules/dayjs/plugin/utc.js");
-const timezone = __webpack_require__(/*! dayjs/plugin/timezone */ "./node_modules/dayjs/plugin/timezone.js"); // dependent on utc plugin
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.tz.setDefault('UTC');
+
+
+dayjs__WEBPACK_IMPORTED_MODULE_0___default().extend((dayjs_plugin_utc__WEBPACK_IMPORTED_MODULE_1___default()));
+dayjs__WEBPACK_IMPORTED_MODULE_0___default().extend((dayjs_plugin_timezone__WEBPACK_IMPORTED_MODULE_2___default()));
+dayjs__WEBPACK_IMPORTED_MODULE_0___default().tz.setDefault('UTC');
 
 const key = 'dcee472b5a49e727dac8badc44404b52';
 
@@ -104,7 +108,7 @@ async function getCoords(city) {
     const parsed = await response.json();
     return [parsed[0].lat, parsed[0].lon];
   } catch (error) {
-    (0,_error__WEBPACK_IMPORTED_MODULE_0__["default"])();
+    (0,_error__WEBPACK_IMPORTED_MODULE_3__["default"])();
     return error;
   }
 }
@@ -118,8 +122,8 @@ async function getWeather(location) {
       `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${key}`
     );
     const parsed = await response.json();
-    const sunrise = dayjs.unix(parsed.sys.sunrise + parsed.timezone).tz();
-    const sunset = dayjs.unix(parsed.sys.sunset + parsed.timezone).tz();
+    const sunrise = dayjs__WEBPACK_IMPORTED_MODULE_0___default().unix(parsed.sys.sunrise + parsed.timezone).tz();
+    const sunset = dayjs__WEBPACK_IMPORTED_MODULE_0___default().unix(parsed.sys.sunset + parsed.timezone).tz();
     return {
       name: `${parsed.name}, ${parsed.sys.country}`,
       temp: parsed.main.temp,
@@ -131,8 +135,7 @@ async function getWeather(location) {
       code: parsed.weather[0].id,
     };
   } catch (error) {
-    (0,_error__WEBPACK_IMPORTED_MODULE_0__["default"])();
-    console.error(error);
+    (0,_error__WEBPACK_IMPORTED_MODULE_3__["default"])();
     return error;
   }
 }
@@ -150,14 +153,12 @@ async function getForecast(location) {
     return parsed.list.map((forecast) => ({
       temp: forecast.main.temp,
       iconURL: `https://openweathermap.org/img/wn/${forecast.weather[0].icon}@2x.png`,
-      time: dayjs
-        .unix(forecast.dt + localTime)
+      time: dayjs__WEBPACK_IMPORTED_MODULE_0___default().unix(forecast.dt + localTime)
         .tz()
         .format('hA'),
     }));
   } catch (error) {
-    (0,_error__WEBPACK_IMPORTED_MODULE_0__["default"])();
-    console.error(error);
+    (0,_error__WEBPACK_IMPORTED_MODULE_3__["default"])();
     return error;
   }
 }
@@ -911,7 +912,7 @@ let isFahrenheit = true;
 let kelvins;
 let kelvinsFeelsLike;
 const forecastKelvins = [];
-const forecastTemperatures =  [];
+const forecastTemperatures = [];
 
 const locationIcon = document.querySelector('#location-icon');
 
@@ -969,26 +970,28 @@ async function setForecast(location) {
   });
 }
 
-async function search() {
-  setWeather({city: searchBar.value});
-  await setForecast({city: searchBar.value});
-  convertTemperatures();
+function search() {
+  Promise.all([
+    setWeather({ city: searchBar.value }),
+    setForecast({ city: searchBar.value }),
+  ]).then(convertTemperatures);
 }
 
-async function searchUserLocation() {
+function searchUserLocation() {
   navigator.geolocation.getCurrentPosition(
-    async (position) => {
+    (position) => {
       const userCoords = [position.coords.latitude, position.coords.longitude];
-      setWeather({coords: userCoords});
-      await setForecast({coords: userCoords});
-      convertTemperatures();
+      Promise.all([
+        setWeather({ coords: userCoords }),
+        setForecast({ coords: userCoords }),
+      ]).then(convertTemperatures);
     },
-    (error) => console.error(error));
+    (error) => console.error(error)
+  );
 }
 
 const slider = document.querySelector('.slider');
 slider.addEventListener('click', toggleUnit);
-
 
 function toggleUnit() {
   // default is Fahrenheit
@@ -998,20 +1001,20 @@ function toggleUnit() {
 }
 
 function convertTemperatures() {
-  if (isFahrenheit) {
-    temp.textContent = `${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(kelvins).toFahrenheit().value)}°F`;
-    feelsLike.textContent = `Feels like: ${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(kelvinsFeelsLike).toFahrenheit().value)}°F`;
-    forecastKelvins.forEach((forecastKelvin, index) => {
-      forecastTemperatures[index].textContent = `${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(forecastKelvin).toFahrenheit().value)}°F`;
-    })
-  } else {
-    temp.textContent = `${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(kelvins).toCelcius().value)}°C`;
-    feelsLike.textContent = `Feels like: ${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(kelvinsFeelsLike).toCelcius().value)}°C`;
-    forecastKelvins.forEach((forecastKelvin, index) => {
-      forecastTemperatures[index].textContent = `${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(forecastKelvin).toCelcius().value)}°C`;
-    })
-  }
+  const converter = isFahrenheit ? 'toFahrenheit' : 'toCelcius';
+  const symbol = isFahrenheit ? 'F' : 'C';
+
+  temp.textContent = `${Math.round(new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(kelvins)[converter]().value)}°${symbol}`;
+  feelsLike.textContent = `Feels like: ${Math.round(
+    new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(kelvinsFeelsLike)[converter]().value
+  )}°${symbol}`;
+  forecastKelvins.forEach((forecastKelvin, index) => {
+    forecastTemperatures[index].textContent = `${Math.round(
+      new _khanisak_temperature_converter__WEBPACK_IMPORTED_MODULE_0__.Kelvin(forecastKelvin)[converter]().value
+    )}°${symbol}`;
+  });
 }
+
 })();
 
 /******/ })()
