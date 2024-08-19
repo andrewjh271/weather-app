@@ -1,5 +1,5 @@
 import { getWeather, getForecast } from './weatherAPI';
-import setBackground from './weatherBackground';
+import { setBackground } from './weatherBackground';
 import { convert } from './temperature';
 
 const weatherContainer = document.querySelector('#weather-container');

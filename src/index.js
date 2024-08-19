@@ -1,7 +1,7 @@
 import { setWeather, setForecast, convertTemperatures } from './weatherDOM';
 import { toggle } from './temperature';
 import { byCity, byUserLocation } from './location';
-import handleError from './error';
+import { handleError } from './error';
 import './height';
 
 const searchBar = document.querySelector('#search');

@@ -1,4 +1,4 @@
-import KEY from './key';
+import { KEY } from './key';
 
 async function byCity(city) {
   const response = await fetch(

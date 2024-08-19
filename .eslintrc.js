@@ -15,6 +15,7 @@ module.exports = {
   },
   rules: {
     'no-console': 'off',
+    "import/prefer-default-export": "off",
     "no-use-before-define": ["error", {
       "functions": false,
       "classes": true,

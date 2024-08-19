@@ -13,7 +13,7 @@ const hideError = () => container.classList.add('hidden');
 
 close.addEventListener('click', hideError);
 
-export default function handleError(error, code) {
+export function handleError(error, code) {
   console.log(error);
   errorMessage.textContent = MESSAGES[code];
   showError();

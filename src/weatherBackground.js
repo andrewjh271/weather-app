@@ -1,6 +1,6 @@
 document.body.style.backgroundImage = "url('images/landing.jpg')";
 
-export default function setBackground(code) {
+export function setBackground(code) {
   let keyword;
   switch (true) {
     case code < 300:
