@@ -40,7 +40,7 @@
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ handleError)
+/* harmony export */   handleError: () => (/* binding */ handleError)
 /* harmony export */ });
 const MESSAGES = {
   INPUT: 'No city was found that matched your query.',
@@ -87,9 +87,9 @@ document.body.style.height = `${window.innerHeight}px`;
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */   KEY: () => (/* binding */ KEY)
 /* harmony export */ });
-/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ('dcee472b5a49e727dac8badc44404b52');
+const KEY = 'dcee472b5a49e727dac8badc44404b52';
 
 
 /***/ }),
@@ -111,7 +111,7 @@ __webpack_require__.r(__webpack_exports__);
 
 async function byCity(city) {
   const response = await fetch(
-    `https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${_key__WEBPACK_IMPORTED_MODULE_0__["default"]}&limit=1`,
+    `https://api.openweathermap.org/geo/1.0/direct?q=${city}&appid=${_key__WEBPACK_IMPORTED_MODULE_0__.KEY}&limit=1`,
     { mode: 'cors' }
   );
   const parsed = await response.json();
@@ -197,7 +197,7 @@ dayjs__WEBPACK_IMPORTED_MODULE_0___default().tz.setDefault('UTC');
 async function getWeather(coords) {
   const [lat, long] = coords;
   const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${_key__WEBPACK_IMPORTED_MODULE_3__["default"]}`
+    `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${long}&appid=${_key__WEBPACK_IMPORTED_MODULE_3__.KEY}`
   );
   const parsed = await response.json();
   const sunrise = dayjs__WEBPACK_IMPORTED_MODULE_0___default().unix(parsed.sys.sunrise + parsed.timezone).tz();
@@ -217,7 +217,7 @@ async function getWeather(coords) {
 async function getForecast(coords) {
   const [lat, long] = coords;
   const response = await fetch(
-    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${_key__WEBPACK_IMPORTED_MODULE_3__["default"]}&cnt=6`
+    `https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${long}&appid=${_key__WEBPACK_IMPORTED_MODULE_3__.KEY}&cnt=6`
   );
   const parsed = await response.json();
   const localTime = parsed.city.timezone;
@@ -244,7 +244,7 @@ async function getForecast(coords) {
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "default": () => (/* binding */ setBackground)
+/* harmony export */   setBackground: () => (/* binding */ setBackground)
 /* harmony export */ });
 document.body.style.backgroundImage = "url('images/landing.jpg')";
 
@@ -332,7 +332,7 @@ async function setWeather(location) {
   sunrise.textContent = `Sunrise: ${data.sunrise}`;
   sunset.textContent = `Sunset: ${data.sunset}`;
 
-  (0,_weatherBackground__WEBPACK_IMPORTED_MODULE_1__["default"])(data.code);
+  (0,_weatherBackground__WEBPACK_IMPORTED_MODULE_1__.setBackground)(data.code);
   weatherContainer.classList.remove('hidden');
 }
 
@@ -1071,19 +1071,19 @@ searchBar.addEventListener('keyup', (e) => {
 function searchByInput() {
   (0,_location__WEBPACK_IMPORTED_MODULE_2__.byCity)(searchBar.value)
     .then(search)
-    .catch((error) => (0,_error__WEBPACK_IMPORTED_MODULE_3__["default"])(error, 'INPUT'));
+    .catch((error) => (0,_error__WEBPACK_IMPORTED_MODULE_3__.handleError)(error, 'INPUT'));
 }
 
 function searchByLocation() {
   (0,_location__WEBPACK_IMPORTED_MODULE_2__.byUserLocation)()
     .then(search)
-    .catch((error) => (0,_error__WEBPACK_IMPORTED_MODULE_3__["default"])(error, 'LOCATION'));
+    .catch((error) => (0,_error__WEBPACK_IMPORTED_MODULE_3__.handleError)(error, 'LOCATION'));
 }
 
 function search(coords) {
   Promise.all([(0,_weatherDOM__WEBPACK_IMPORTED_MODULE_0__.setWeather)(coords), (0,_weatherDOM__WEBPACK_IMPORTED_MODULE_0__.setForecast)(coords)])
     .then(_weatherDOM__WEBPACK_IMPORTED_MODULE_0__.convertTemperatures)
-    .catch((error) => (0,_error__WEBPACK_IMPORTED_MODULE_3__["default"])(error, 'WEATHER'));
+    .catch((error) => (0,_error__WEBPACK_IMPORTED_MODULE_3__.handleError)(error, 'WEATHER'));
 }
 
 function toggleUnit() {
