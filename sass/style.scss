@@ -129,6 +129,11 @@ footer {
   }
 }
 
+.search-container {
+  display: flex;
+  align-items: center;
+}
+
 #search {
   border: none;
   width: 200px;
@@ -147,7 +152,6 @@ footer {
 #search-icon {
   position: relative;
   font-size: 23px;
-  top: 5px;
   right: 33px;
 
   &:hover {
@@ -159,8 +163,7 @@ footer {
 #location-icon {
   position: relative;
   font-size: 23px;
-  top: 6px;
-  right: 21px;
+  right: 15px;
 
   &:hover {
     color: #dae5ef;
